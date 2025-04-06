@@ -11,62 +11,120 @@
 // Import Routes
 
 import { Route as rootRoute } from './app/__root'
-import { Route as ContactImport } from './app/contact'
-import { Route as AuthImport } from './app/auth'
-import { Route as AppImport } from './app/_app'
-import { Route as RouteImport } from './app/route'
-import { Route as PostsIndexImport } from './app/posts/index'
-import { Route as AboutIndexImport } from './app/about/index'
-import { Route as AuthSignInImport } from './app/auth/sign-in'
-import { Route as PostsPostIdRouteImport } from './app/posts/$postId/route'
+import { Route as DashboardRouteImport } from './app/dashboard/route'
+import { Route as AuthRouteImport } from './app/auth/route'
+import { Route as IndexImport } from './app/index'
+import { Route as DashboardIndexImport } from './app/dashboard/index'
+import { Route as DashboardSettingsImport } from './app/dashboard/settings'
+import { Route as AuthSigninImport } from './app/auth/signin'
+import { Route as AuthRegisterImport } from './app/auth/register'
+import { Route as DashboardPresentsRouteImport } from './app/dashboard/presents/route'
+import { Route as DashboardListsRouteImport } from './app/dashboard/lists/route'
+import { Route as DashboardPresentsIndexImport } from './app/dashboard/presents/index'
+import { Route as DashboardListsIndexImport } from './app/dashboard/lists/index'
+import { Route as DashboardPresentsCreateImport } from './app/dashboard/presents/create'
+import { Route as DashboardListsCreateImport } from './app/dashboard/lists/create'
+import { Route as DashboardListsListIdIndexImport } from './app/dashboard/lists/$listId/index'
+import { Route as DashboardPresentsPresentIdEditImport } from './app/dashboard/presents/$presentId/edit'
+import { Route as DashboardListsListIdEditImport } from './app/dashboard/lists/$listId/edit'
 
 // Create/Update Routes
 
-const ContactRoute = ContactImport.update({
-  id: '/contact',
-  path: '/contact',
+const DashboardRouteRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthRoute = AuthImport.update({
+const AuthRouteRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AppRoute = AppImport.update({
-  id: '/_app',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const RouteRoute = RouteImport.update({
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const PostsIndexRoute = PostsIndexImport.update({
-  id: '/posts/',
-  path: '/posts/',
-  getParentRoute: () => rootRoute,
+const DashboardIndexRoute = DashboardIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 
-const AboutIndexRoute = AboutIndexImport.update({
-  id: '/about/',
-  path: '/about/',
-  getParentRoute: () => rootRoute,
+const DashboardSettingsRoute = DashboardSettingsImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 
-const AuthSignInRoute = AuthSignInImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
-  getParentRoute: () => AuthRoute,
+const AuthSigninRoute = AuthSigninImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 
-const PostsPostIdRouteRoute = PostsPostIdRouteImport.update({
-  id: '/posts/$postId',
-  path: '/posts/$postId',
-  getParentRoute: () => rootRoute,
+const AuthRegisterRoute = AuthRegisterImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+
+const DashboardPresentsRouteRoute = DashboardPresentsRouteImport.update({
+  id: '/presents',
+  path: '/presents',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const DashboardListsRouteRoute = DashboardListsRouteImport.update({
+  id: '/lists',
+  path: '/lists',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const DashboardPresentsIndexRoute = DashboardPresentsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardPresentsRouteRoute,
+} as any)
+
+const DashboardListsIndexRoute = DashboardListsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardListsRouteRoute,
+} as any)
+
+const DashboardPresentsCreateRoute = DashboardPresentsCreateImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => DashboardPresentsRouteRoute,
+} as any)
+
+const DashboardListsCreateRoute = DashboardListsCreateImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => DashboardListsRouteRoute,
+} as any)
+
+const DashboardListsListIdIndexRoute = DashboardListsListIdIndexImport.update({
+  id: '/$listId/',
+  path: '/$listId/',
+  getParentRoute: () => DashboardListsRouteRoute,
+} as any)
+
+const DashboardPresentsPresentIdEditRoute =
+  DashboardPresentsPresentIdEditImport.update({
+    id: '/$presentId/edit',
+    path: '/$presentId/edit',
+    getParentRoute: () => DashboardPresentsRouteRoute,
+  } as any)
+
+const DashboardListsListIdEditRoute = DashboardListsListIdEditImport.update({
+  id: '/$listId/edit',
+  path: '/$listId/edit',
+  getParentRoute: () => DashboardListsRouteRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -77,159 +135,306 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof RouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AppImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
-      preLoaderRoute: typeof AuthImport
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRoute
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRoute
     }
-    '/posts/$postId': {
-      id: '/posts/$postId'
-      path: '/posts/$postId'
-      fullPath: '/posts/$postId'
-      preLoaderRoute: typeof PostsPostIdRouteImport
-      parentRoute: typeof rootRoute
+    '/dashboard/lists': {
+      id: '/dashboard/lists'
+      path: '/lists'
+      fullPath: '/dashboard/lists'
+      preLoaderRoute: typeof DashboardListsRouteImport
+      parentRoute: typeof DashboardRouteImport
     }
-    '/auth/sign-in': {
-      id: '/auth/sign-in'
-      path: '/sign-in'
-      fullPath: '/auth/sign-in'
-      preLoaderRoute: typeof AuthSignInImport
-      parentRoute: typeof AuthImport
+    '/dashboard/presents': {
+      id: '/dashboard/presents'
+      path: '/presents'
+      fullPath: '/dashboard/presents'
+      preLoaderRoute: typeof DashboardPresentsRouteImport
+      parentRoute: typeof DashboardRouteImport
     }
-    '/about/': {
-      id: '/about/'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutIndexImport
-      parentRoute: typeof rootRoute
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterImport
+      parentRoute: typeof AuthRouteImport
     }
-    '/posts/': {
-      id: '/posts/'
-      path: '/posts'
-      fullPath: '/posts'
-      preLoaderRoute: typeof PostsIndexImport
-      parentRoute: typeof rootRoute
+    '/auth/signin': {
+      id: '/auth/signin'
+      path: '/signin'
+      fullPath: '/auth/signin'
+      preLoaderRoute: typeof AuthSigninImport
+      parentRoute: typeof AuthRouteImport
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsImport
+      parentRoute: typeof DashboardRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexImport
+      parentRoute: typeof DashboardRouteImport
+    }
+    '/dashboard/lists/create': {
+      id: '/dashboard/lists/create'
+      path: '/create'
+      fullPath: '/dashboard/lists/create'
+      preLoaderRoute: typeof DashboardListsCreateImport
+      parentRoute: typeof DashboardListsRouteImport
+    }
+    '/dashboard/presents/create': {
+      id: '/dashboard/presents/create'
+      path: '/create'
+      fullPath: '/dashboard/presents/create'
+      preLoaderRoute: typeof DashboardPresentsCreateImport
+      parentRoute: typeof DashboardPresentsRouteImport
+    }
+    '/dashboard/lists/': {
+      id: '/dashboard/lists/'
+      path: '/'
+      fullPath: '/dashboard/lists/'
+      preLoaderRoute: typeof DashboardListsIndexImport
+      parentRoute: typeof DashboardListsRouteImport
+    }
+    '/dashboard/presents/': {
+      id: '/dashboard/presents/'
+      path: '/'
+      fullPath: '/dashboard/presents/'
+      preLoaderRoute: typeof DashboardPresentsIndexImport
+      parentRoute: typeof DashboardPresentsRouteImport
+    }
+    '/dashboard/lists/$listId/edit': {
+      id: '/dashboard/lists/$listId/edit'
+      path: '/$listId/edit'
+      fullPath: '/dashboard/lists/$listId/edit'
+      preLoaderRoute: typeof DashboardListsListIdEditImport
+      parentRoute: typeof DashboardListsRouteImport
+    }
+    '/dashboard/presents/$presentId/edit': {
+      id: '/dashboard/presents/$presentId/edit'
+      path: '/$presentId/edit'
+      fullPath: '/dashboard/presents/$presentId/edit'
+      preLoaderRoute: typeof DashboardPresentsPresentIdEditImport
+      parentRoute: typeof DashboardPresentsRouteImport
+    }
+    '/dashboard/lists/$listId/': {
+      id: '/dashboard/lists/$listId/'
+      path: '/$listId'
+      fullPath: '/dashboard/lists/$listId'
+      preLoaderRoute: typeof DashboardListsListIdIndexImport
+      parentRoute: typeof DashboardListsRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface AuthRouteChildren {
-  AuthSignInRoute: typeof AuthSignInRoute
+interface AuthRouteRouteChildren {
+  AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthSigninRoute: typeof AuthSigninRoute
 }
 
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthSignInRoute: AuthSignInRoute,
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthRegisterRoute: AuthRegisterRoute,
+  AuthSigninRoute: AuthSigninRoute,
 }
 
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
+interface DashboardListsRouteRouteChildren {
+  DashboardListsCreateRoute: typeof DashboardListsCreateRoute
+  DashboardListsIndexRoute: typeof DashboardListsIndexRoute
+  DashboardListsListIdEditRoute: typeof DashboardListsListIdEditRoute
+  DashboardListsListIdIndexRoute: typeof DashboardListsListIdIndexRoute
+}
+
+const DashboardListsRouteRouteChildren: DashboardListsRouteRouteChildren = {
+  DashboardListsCreateRoute: DashboardListsCreateRoute,
+  DashboardListsIndexRoute: DashboardListsIndexRoute,
+  DashboardListsListIdEditRoute: DashboardListsListIdEditRoute,
+  DashboardListsListIdIndexRoute: DashboardListsListIdIndexRoute,
+}
+
+const DashboardListsRouteRouteWithChildren =
+  DashboardListsRouteRoute._addFileChildren(DashboardListsRouteRouteChildren)
+
+interface DashboardPresentsRouteRouteChildren {
+  DashboardPresentsCreateRoute: typeof DashboardPresentsCreateRoute
+  DashboardPresentsIndexRoute: typeof DashboardPresentsIndexRoute
+  DashboardPresentsPresentIdEditRoute: typeof DashboardPresentsPresentIdEditRoute
+}
+
+const DashboardPresentsRouteRouteChildren: DashboardPresentsRouteRouteChildren =
+  {
+    DashboardPresentsCreateRoute: DashboardPresentsCreateRoute,
+    DashboardPresentsIndexRoute: DashboardPresentsIndexRoute,
+    DashboardPresentsPresentIdEditRoute: DashboardPresentsPresentIdEditRoute,
+  }
+
+const DashboardPresentsRouteRouteWithChildren =
+  DashboardPresentsRouteRoute._addFileChildren(
+    DashboardPresentsRouteRouteChildren,
+  )
+
+interface DashboardRouteRouteChildren {
+  DashboardListsRouteRoute: typeof DashboardListsRouteRouteWithChildren
+  DashboardPresentsRouteRoute: typeof DashboardPresentsRouteRouteWithChildren
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardListsRouteRoute: DashboardListsRouteRouteWithChildren,
+  DashboardPresentsRouteRoute: DashboardPresentsRouteRouteWithChildren,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
 
 export interface FileRoutesByFullPath {
-  '/': typeof RouteRoute
-  '': typeof AppRoute
-  '/auth': typeof AuthRouteWithChildren
-  '/contact': typeof ContactRoute
-  '/posts/$postId': typeof PostsPostIdRouteRoute
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/about': typeof AboutIndexRoute
-  '/posts': typeof PostsIndexRoute
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRouteRouteWithChildren
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard/lists': typeof DashboardListsRouteRouteWithChildren
+  '/dashboard/presents': typeof DashboardPresentsRouteRouteWithChildren
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/lists/create': typeof DashboardListsCreateRoute
+  '/dashboard/presents/create': typeof DashboardPresentsCreateRoute
+  '/dashboard/lists/': typeof DashboardListsIndexRoute
+  '/dashboard/presents/': typeof DashboardPresentsIndexRoute
+  '/dashboard/lists/$listId/edit': typeof DashboardListsListIdEditRoute
+  '/dashboard/presents/$presentId/edit': typeof DashboardPresentsPresentIdEditRoute
+  '/dashboard/lists/$listId': typeof DashboardListsListIdIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof RouteRoute
-  '': typeof AppRoute
-  '/auth': typeof AuthRouteWithChildren
-  '/contact': typeof ContactRoute
-  '/posts/$postId': typeof PostsPostIdRouteRoute
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/about': typeof AboutIndexRoute
-  '/posts': typeof PostsIndexRoute
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRouteRouteWithChildren
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/lists/create': typeof DashboardListsCreateRoute
+  '/dashboard/presents/create': typeof DashboardPresentsCreateRoute
+  '/dashboard/lists': typeof DashboardListsIndexRoute
+  '/dashboard/presents': typeof DashboardPresentsIndexRoute
+  '/dashboard/lists/$listId/edit': typeof DashboardListsListIdEditRoute
+  '/dashboard/presents/$presentId/edit': typeof DashboardPresentsPresentIdEditRoute
+  '/dashboard/lists/$listId': typeof DashboardListsListIdIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof RouteRoute
-  '/_app': typeof AppRoute
-  '/auth': typeof AuthRouteWithChildren
-  '/contact': typeof ContactRoute
-  '/posts/$postId': typeof PostsPostIdRouteRoute
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/about/': typeof AboutIndexRoute
-  '/posts/': typeof PostsIndexRoute
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRouteRouteWithChildren
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/dashboard/lists': typeof DashboardListsRouteRouteWithChildren
+  '/dashboard/presents': typeof DashboardPresentsRouteRouteWithChildren
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/lists/create': typeof DashboardListsCreateRoute
+  '/dashboard/presents/create': typeof DashboardPresentsCreateRoute
+  '/dashboard/lists/': typeof DashboardListsIndexRoute
+  '/dashboard/presents/': typeof DashboardPresentsIndexRoute
+  '/dashboard/lists/$listId/edit': typeof DashboardListsListIdEditRoute
+  '/dashboard/presents/$presentId/edit': typeof DashboardPresentsPresentIdEditRoute
+  '/dashboard/lists/$listId/': typeof DashboardListsListIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | ''
     | '/auth'
-    | '/contact'
-    | '/posts/$postId'
-    | '/auth/sign-in'
-    | '/about'
-    | '/posts'
+    | '/dashboard'
+    | '/dashboard/lists'
+    | '/dashboard/presents'
+    | '/auth/register'
+    | '/auth/signin'
+    | '/dashboard/settings'
+    | '/dashboard/'
+    | '/dashboard/lists/create'
+    | '/dashboard/presents/create'
+    | '/dashboard/lists/'
+    | '/dashboard/presents/'
+    | '/dashboard/lists/$listId/edit'
+    | '/dashboard/presents/$presentId/edit'
+    | '/dashboard/lists/$listId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | ''
     | '/auth'
-    | '/contact'
-    | '/posts/$postId'
-    | '/auth/sign-in'
-    | '/about'
-    | '/posts'
+    | '/auth/register'
+    | '/auth/signin'
+    | '/dashboard/settings'
+    | '/dashboard'
+    | '/dashboard/lists/create'
+    | '/dashboard/presents/create'
+    | '/dashboard/lists'
+    | '/dashboard/presents'
+    | '/dashboard/lists/$listId/edit'
+    | '/dashboard/presents/$presentId/edit'
+    | '/dashboard/lists/$listId'
   id:
     | '__root__'
     | '/'
-    | '/_app'
     | '/auth'
-    | '/contact'
-    | '/posts/$postId'
-    | '/auth/sign-in'
-    | '/about/'
-    | '/posts/'
+    | '/dashboard'
+    | '/dashboard/lists'
+    | '/dashboard/presents'
+    | '/auth/register'
+    | '/auth/signin'
+    | '/dashboard/settings'
+    | '/dashboard/'
+    | '/dashboard/lists/create'
+    | '/dashboard/presents/create'
+    | '/dashboard/lists/'
+    | '/dashboard/presents/'
+    | '/dashboard/lists/$listId/edit'
+    | '/dashboard/presents/$presentId/edit'
+    | '/dashboard/lists/$listId/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  RouteRoute: typeof RouteRoute
-  AppRoute: typeof AppRoute
-  AuthRoute: typeof AuthRouteWithChildren
-  ContactRoute: typeof ContactRoute
-  PostsPostIdRouteRoute: typeof PostsPostIdRouteRoute
-  AboutIndexRoute: typeof AboutIndexRoute
-  PostsIndexRoute: typeof PostsIndexRoute
+  IndexRoute: typeof IndexRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  RouteRoute: RouteRoute,
-  AppRoute: AppRoute,
-  AuthRoute: AuthRouteWithChildren,
-  ContactRoute: ContactRoute,
-  PostsPostIdRouteRoute: PostsPostIdRouteRoute,
-  AboutIndexRoute: AboutIndexRoute,
-  PostsIndexRoute: PostsIndexRoute,
+  IndexRoute: IndexRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -243,41 +448,91 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_app",
         "/auth",
-        "/contact",
-        "/posts/$postId",
-        "/about/",
-        "/posts/"
+        "/dashboard"
       ]
     },
     "/": {
-      "filePath": "route.tsx"
-    },
-    "/_app": {
-      "filePath": "_app.tsx"
+      "filePath": "index.tsx"
     },
     "/auth": {
-      "filePath": "auth.tsx",
+      "filePath": "auth/route.tsx",
       "children": [
-        "/auth/sign-in"
+        "/auth/register",
+        "/auth/signin"
       ]
     },
-    "/contact": {
-      "filePath": "contact.tsx"
+    "/dashboard": {
+      "filePath": "dashboard/route.tsx",
+      "children": [
+        "/dashboard/lists",
+        "/dashboard/presents",
+        "/dashboard/settings",
+        "/dashboard/"
+      ]
     },
-    "/posts/$postId": {
-      "filePath": "posts/$postId/route.tsx"
+    "/dashboard/lists": {
+      "filePath": "dashboard/lists/route.tsx",
+      "parent": "/dashboard",
+      "children": [
+        "/dashboard/lists/create",
+        "/dashboard/lists/",
+        "/dashboard/lists/$listId/edit",
+        "/dashboard/lists/$listId/"
+      ]
     },
-    "/auth/sign-in": {
-      "filePath": "auth/sign-in.tsx",
+    "/dashboard/presents": {
+      "filePath": "dashboard/presents/route.tsx",
+      "parent": "/dashboard",
+      "children": [
+        "/dashboard/presents/create",
+        "/dashboard/presents/",
+        "/dashboard/presents/$presentId/edit"
+      ]
+    },
+    "/auth/register": {
+      "filePath": "auth/register.tsx",
       "parent": "/auth"
     },
-    "/about/": {
-      "filePath": "about/index.tsx"
+    "/auth/signin": {
+      "filePath": "auth/signin.tsx",
+      "parent": "/auth"
     },
-    "/posts/": {
-      "filePath": "posts/index.tsx"
+    "/dashboard/settings": {
+      "filePath": "dashboard/settings.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/": {
+      "filePath": "dashboard/index.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/lists/create": {
+      "filePath": "dashboard/lists/create.tsx",
+      "parent": "/dashboard/lists"
+    },
+    "/dashboard/presents/create": {
+      "filePath": "dashboard/presents/create.tsx",
+      "parent": "/dashboard/presents"
+    },
+    "/dashboard/lists/": {
+      "filePath": "dashboard/lists/index.tsx",
+      "parent": "/dashboard/lists"
+    },
+    "/dashboard/presents/": {
+      "filePath": "dashboard/presents/index.tsx",
+      "parent": "/dashboard/presents"
+    },
+    "/dashboard/lists/$listId/edit": {
+      "filePath": "dashboard/lists/$listId/edit.tsx",
+      "parent": "/dashboard/lists"
+    },
+    "/dashboard/presents/$presentId/edit": {
+      "filePath": "dashboard/presents/$presentId/edit.tsx",
+      "parent": "/dashboard/presents"
+    },
+    "/dashboard/lists/$listId/": {
+      "filePath": "dashboard/lists/$listId/index.tsx",
+      "parent": "/dashboard/lists"
     }
   }
 }

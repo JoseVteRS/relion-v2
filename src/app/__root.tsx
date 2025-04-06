@@ -2,6 +2,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
   HeadContent,
+  Link,
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,32 +13,41 @@ import * as React from "react";
 
 import { DefaultCatchBoundary } from "@/components/default-catch-boundary";
 
-import appCss from "@/styles/global.css?url";
+import appCss from "@/app/global.css?url";
+import { Navbar } from "@/components/navbar";
+import { auth } from "@/lib/auth";
+import { useSession } from "@/lib/auth-client";
 import { AppRouter } from "@/trpc/router";
 import { ReactQueryDevtools, TanStackRouterDevtools } from "@/utils/dev-tools";
 import { seo } from "@/utils/seo";
+import { Toaster } from "sonner";
 
-const getServerSession = createServerFn({ method: "GET" }).handler(async () => {
+const getUser = createServerFn({ method: "GET" }).handler(async () => {
   const { headers } = getWebRequest()!;
+  const session = await auth.api.getSession({ headers });
+
+  return session?.user || null;
 });
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   trpc: TRPCOptionsProxy<AppRouter>;
+  user: Awaited<ReturnType<typeof getUser>>;
 }>()({
-  beforeLoad: async () => {
-    const session = await getServerSession();
-
-    return { session };
+  beforeLoad: async ({ context }) => {
+    const user = await context.queryClient.fetchQuery({
+      queryKey: ["user"],
+      queryFn: ({ signal }) => getUser({ signal }),
+    }); // we're using react-query for caching, see router.tsx
+    return { user };
   },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       ...seo({
-        title: "Start start",
-        description:
-          "TanStack Start starter with tRPC, Drizzle ORM, better-auth and TailwindCSS ",
+        title: "Relion",
+        description: "Que la sorpresa sea el regalo y no tener que devolverlo",
       }),
     ],
     links: [
@@ -68,15 +78,23 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  
+
   return (
-    <html lang="en">
+    <html lang="es" className="light">
       <head>
         <HeadContent />
       </head>
-      <body className="antialiased font-display min-h-screen flex flex-col">
-        {children}
+      <body className="antialiased font-display min-h-[100dvh - 56px]">
+        <main>
+          {children}
+        </main>
+
+        <Toaster richColors position="top-right" />
+
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" />
+
         <Scripts />
       </body>
     </html>

@@ -27,7 +27,7 @@ const getRequestHeaders = createServerFn({ method: "GET" }).handler(
     const headers = new Headers(request.headers);
 
     return Object.fromEntries(headers);
-  },
+  }
 );
 
 export function createRouter() {
@@ -56,18 +56,23 @@ export function createRouter() {
     ],
   });
 
-  const trpc = createTRPCOptionsProxy<AppRouter>({
+   const trpc = createTRPCOptionsProxy<AppRouter>({
     client: trpcClient,
     queryClient,
   });
 
   const router = createTanStackRouter({
-    context: { queryClient, trpc },
     routeTree,
+    context: { queryClient, trpc, user: null },
     defaultPreload: "intent",
+
+    // react-query will handle data fetching & caching
+    // https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#passing-all-loader-events-to-an-external-cache
+    defaultPreloadStaleTime: 0,
     defaultErrorComponent: DefaultCatchBoundary,
-    defaultNotFoundComponent: () => <NotFound />,
+    defaultNotFoundComponent: NotFound,
     scrollRestoration: true,
+    defaultStructuralSharing: true,
     Wrap: (props) => {
       return (
         <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>

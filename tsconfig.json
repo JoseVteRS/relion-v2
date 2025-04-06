@@ -1,8 +1,9 @@
 {
   "include": [
     "**/*.ts",
-    "**/*.tsx"
-, "postcss.config.mjs"  ],
+    "**/*.tsx",
+    "postcss.config.mjs"
+  ],
   "compilerOptions": {
     "strict": true,
     "esModuleInterop": true,
