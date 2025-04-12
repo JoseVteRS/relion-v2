@@ -7,7 +7,7 @@ export default defineConfig({
     routesDirectory: "src/app",
   },
   server: {
-    preset: "bun",
+    preset: "netlify",
   },
   vite: {
     plugins: [
