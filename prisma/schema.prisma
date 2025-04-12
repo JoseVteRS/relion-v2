@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Tier {
+  FREE
+  PREMIUM
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -24,8 +29,12 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  presents Present[]
-  lists    List[]
+  tier          Tier       @default(FREE)
+
+  presents Present[] @relation("OwnedPresents")
+  picks    Present[] @relation("PickedPresents")
+
+  lists List[]
 
   @@map("user")
 }
@@ -86,22 +95,33 @@ enum ItemVisibility {
   PRIVATE
 }
 
+enum PickedStatus {
+  UNPICKED
+  PICKED
+  BOUGHT
+}
+
 model Present {
-  id           String         @id @default(uuid())
-  name         String
-  status       ItemStatus     @default(DRAFT)
-  visibility   ItemVisibility @default(PUBLIC)
-  description  String?
-  externalLink String?
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  externalLink   String?
+  status         ItemStatus     @default(DRAFT)
+  visibility     ItemVisibility @default(PRIVATE)
+  pickedStatus   PickedStatus   @default(UNPICKED)
+  pickedAt       DateTime?
+  pickedByUserId String?
+  pickedBy       User?    @relation("PickedPresents", fields: [pickedByUserId], references: [id])
+  ownerId        String
+  owner          User     @relation("OwnedPresents", fields: [ownerId], references: [id])
+  listId         String?
+  list           List?    @relation(fields: [listId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  listId String?
-  list   List?   @relation(fields: [listId], references: [id], onDelete: NoAction)
-
-  ownerId String
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([ownerId])
+  @@index([listId])
+  @@index([pickedByUserId])
 }
 
 model List {

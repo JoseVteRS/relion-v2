@@ -1,10 +1,12 @@
 import { prisma } from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { PickedStatus, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { PresentStatus } from "../schemas";
 import { presentCreateSchema } from "../schemas/present-create-schema";
 
-const presentEditSchema = presentCreateSchema.partial();
+const presentEditSchema = presentCreateSchema.partial().extend({ id: z.string() });
 
 export const presentRouter = createTRPCRouter({
   create: protectedProcedure
@@ -92,7 +94,7 @@ export const presentRouter = createTRPCRouter({
       return present;
     }),
   edit: protectedProcedure
-    .input(presentEditSchema.extend({ id: z.string() }))
+    .input(presentEditSchema)
     .mutation(async ({ ctx, input }) => {
       try {
         const { success, data: dataInput } = presentEditSchema.safeParse(input);
@@ -130,4 +132,128 @@ export const presentRouter = createTRPCRouter({
         });
       }
     }),
+
+  /**
+   * Pick a present
+   */
+  pick: protectedProcedure
+    .input(z.object({ presentId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { presentId } = input;
+      
+      const present = await prisma.present.findUnique({
+        where: { id: presentId },
+      });
+
+      if (!present) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Regalo no encontrado",
+        });
+      }
+
+      // Verificar si el regalo ya está marcado
+      if (present.pickedStatus !== PickedStatus.UNPICKED) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Este regalo ya ha sido elegido",
+        });
+      }
+
+      // Marcar el regalo con el ID del usuario autenticado
+      const updatedPresent = await prisma.present.update({
+        where: { id: presentId },
+        data: {
+          pickedStatus: PickedStatus.PICKED,
+          pickedAt: new Date(),
+          pickedByUserId: ctx.session.user.id,
+        },
+      });
+      
+      return updatedPresent;
+    }),
+
+  /**
+   * Unpick a present
+   */
+  unpick: protectedProcedure
+    .input(z.object({ presentId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { presentId } = input;
+      
+      const present = await prisma.present.findUnique({
+        where: { id: presentId },
+      });
+
+      if (!present) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Regalo no encontrado",
+        });
+      }
+
+      // Verificar permisos
+      if (present.pickedByUserId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permiso para desmarcar este regalo",
+        });
+      }
+
+      const updatedPresent = await prisma.present.update({
+        where: { id: presentId },
+        data: {
+          pickedStatus: PickedStatus.UNPICKED,
+          pickedAt: null,
+          pickedByUserId: null,
+        },
+      });
+
+      return updatedPresent;
+    }),
+
+  /**
+   * Mark a present as bought
+   */
+  markAsBought: protectedProcedure
+    .input(z.object({ presentId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { presentId } = input;
+      
+      const present = await prisma.present.findUnique({
+        where: { id: presentId },
+      });
+
+      if (!present) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Regalo no encontrado",
+        });
+      }
+
+      // Verificar que el regalo esté marcado como picked
+      if (present.pickedStatus !== PickedStatus.PICKED) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "El regalo debe estar marcado como elegido antes de marcarlo como comprado",
+        });
+      }
+
+      // Verificar permisos
+      if (present.pickedByUserId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "No tienes permiso para marcar este regalo como comprado",
+        });
+      }
+
+      const updatedPresent = await prisma.present.update({
+        where: { id: presentId },
+        data: {
+          pickedStatus: PickedStatus.BOUGHT,
+        },
+      });
+
+      return updatedPresent;
+    })
 });

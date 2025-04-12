@@ -27,13 +27,22 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60,
+      maxAge: 5 * 60 * 60 * 24 * 30, // 30 days
     },
+    updateAge: 5 * 60, // 5 minutes
+
+  },
+  rateLimit: {
+    enabled: true,
+    limit: 10,
+    window: 60 * 1000,
   },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
     signInRedirect: "/dashboard",
     signUpRedirect: "/dashboard",
+    autoSignIn: true,
+
   },
 });

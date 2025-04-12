@@ -17,6 +17,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { CopyToClipboard } from "./copy-clipboard";
 
 interface ListCardProps {
   list: List;
@@ -132,6 +133,7 @@ export const ListCard = ({ list }: ListCardProps) => {
               >
                 <Trash2Icon />
               </Button>
+              <CopyToClipboard text={`${window.location.origin}/list/${list.id}/public`} />
             </div>
           </div>
         </CardContent>

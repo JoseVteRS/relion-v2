@@ -1,3 +1,9 @@
+import appCss from "@/app/global.css?url";
+import { DefaultCatchBoundary } from "@/components/default-catch-boundary";
+import { auth } from "@/lib/auth";
+import { AppRouter } from "@/trpc/router";
+import { ReactQueryDevtools, TanStackRouterDevtools } from "@/utils/dev-tools";
+import { seo } from "@/utils/seo";
 import type { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
@@ -10,16 +16,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
 import { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import * as React from "react";
-
-import { DefaultCatchBoundary } from "@/components/default-catch-boundary";
-
-import appCss from "@/app/global.css?url";
-import { Navbar } from "@/components/navbar";
-import { auth } from "@/lib/auth";
-import { useSession } from "@/lib/auth-client";
-import { AppRouter } from "@/trpc/router";
-import { ReactQueryDevtools, TanStackRouterDevtools } from "@/utils/dev-tools";
-import { seo } from "@/utils/seo";
 import { Toaster } from "sonner";
 
 const getUser = createServerFn({ method: "GET" }).handler(async () => {
@@ -28,6 +24,22 @@ const getUser = createServerFn({ method: "GET" }).handler(async () => {
 
   return session?.user || null;
 });
+
+function RootComponent() {
+
+  return (
+    <RootDocument>
+      <div id="root">
+        <div
+          className="w-screen overflow-x-hidden scroll-smooth antialiased"
+          id="content"
+        >
+          <Outlet />
+        </div>
+      </div>
+    </RootDocument>
+  );
+}
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -69,26 +81,14 @@ export const Route = createRootRouteWithContext<{
   component: RootComponent,
 });
 
-function RootComponent() {
-  return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
-  );
-}
-
 function RootDocument({ children }: { children: React.ReactNode }) {
-  
-
   return (
     <html lang="es" className="light">
       <head>
         <HeadContent />
       </head>
       <body className="antialiased font-display min-h-[100dvh - 56px]">
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
 
         <Toaster richColors position="top-right" />
 

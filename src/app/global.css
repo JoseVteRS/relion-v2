@@ -82,8 +82,12 @@
 
   --stripe-dark-draft: oklch(0.81 0.0913 64.06 / 20%);
   --stripe-light-draft: oklch(0.89 0.0469 64.06 / 20%);
+
   --stripe-dark-private-draft: oklch(0.62 0.2516 303.9 / 10%);
   --stripe-light-private-draft: oklch(97.7% 0.014 308.299 / 50%);
+
+  --stripe-dark-picked: oklch(0.85 0 0 / 20%);
+  --stripe-light-picked: oklch(0.90 0 0 / 15%);
 }
 
 .dark {
@@ -246,5 +250,13 @@
     var(--stripe-light-private-draft) 25px,
     var(--stripe-dark-private-draft) 25px,
     var(--stripe-dark-private-draft) 50px
+  );
+
+  --background-image-stripe-picked: repeating-linear-gradient(
+    -60deg,
+    var(--stripe-light-picked) 0px,
+    var(--stripe-light-picked) 25px,
+    var(--stripe-dark-picked) 25px,
+    var(--stripe-dark-picked) 50px
   );
 }

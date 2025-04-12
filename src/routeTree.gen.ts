@@ -27,6 +27,7 @@ import { Route as DashboardListsCreateImport } from './app/dashboard/lists/creat
 import { Route as DashboardListsListIdIndexImport } from './app/dashboard/lists/$listId/index'
 import { Route as DashboardPresentsPresentIdEditImport } from './app/dashboard/presents/$presentId/edit'
 import { Route as DashboardListsListIdEditImport } from './app/dashboard/lists/$listId/edit'
+import { Route as publicListListIdPublicImport } from './app/(public)/list/$listId.public'
 
 // Create/Update Routes
 
@@ -127,6 +128,12 @@ const DashboardListsListIdEditRoute = DashboardListsListIdEditImport.update({
   getParentRoute: () => DashboardListsRouteRoute,
 } as any)
 
+const publicListListIdPublicRoute = publicListListIdPublicImport.update({
+  id: '/(public)/list/$listId/public',
+  path: '/list/$listId/public',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -221,6 +228,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/presents/'
       preLoaderRoute: typeof DashboardPresentsIndexImport
       parentRoute: typeof DashboardPresentsRouteImport
+    }
+    '/(public)/list/$listId/public': {
+      id: '/(public)/list/$listId/public'
+      path: '/list/$listId/public'
+      fullPath: '/list/$listId/public'
+      preLoaderRoute: typeof publicListListIdPublicImport
+      parentRoute: typeof rootRoute
     }
     '/dashboard/lists/$listId/edit': {
       id: '/dashboard/lists/$listId/edit'
@@ -329,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/presents/create': typeof DashboardPresentsCreateRoute
   '/dashboard/lists/': typeof DashboardListsIndexRoute
   '/dashboard/presents/': typeof DashboardPresentsIndexRoute
+  '/list/$listId/public': typeof publicListListIdPublicRoute
   '/dashboard/lists/$listId/edit': typeof DashboardListsListIdEditRoute
   '/dashboard/presents/$presentId/edit': typeof DashboardPresentsPresentIdEditRoute
   '/dashboard/lists/$listId': typeof DashboardListsListIdIndexRoute
@@ -345,6 +360,7 @@ export interface FileRoutesByTo {
   '/dashboard/presents/create': typeof DashboardPresentsCreateRoute
   '/dashboard/lists': typeof DashboardListsIndexRoute
   '/dashboard/presents': typeof DashboardPresentsIndexRoute
+  '/list/$listId/public': typeof publicListListIdPublicRoute
   '/dashboard/lists/$listId/edit': typeof DashboardListsListIdEditRoute
   '/dashboard/presents/$presentId/edit': typeof DashboardPresentsPresentIdEditRoute
   '/dashboard/lists/$listId': typeof DashboardListsListIdIndexRoute
@@ -365,6 +381,7 @@ export interface FileRoutesById {
   '/dashboard/presents/create': typeof DashboardPresentsCreateRoute
   '/dashboard/lists/': typeof DashboardListsIndexRoute
   '/dashboard/presents/': typeof DashboardPresentsIndexRoute
+  '/(public)/list/$listId/public': typeof publicListListIdPublicRoute
   '/dashboard/lists/$listId/edit': typeof DashboardListsListIdEditRoute
   '/dashboard/presents/$presentId/edit': typeof DashboardPresentsPresentIdEditRoute
   '/dashboard/lists/$listId/': typeof DashboardListsListIdIndexRoute
@@ -386,6 +403,7 @@ export interface FileRouteTypes {
     | '/dashboard/presents/create'
     | '/dashboard/lists/'
     | '/dashboard/presents/'
+    | '/list/$listId/public'
     | '/dashboard/lists/$listId/edit'
     | '/dashboard/presents/$presentId/edit'
     | '/dashboard/lists/$listId'
@@ -401,6 +419,7 @@ export interface FileRouteTypes {
     | '/dashboard/presents/create'
     | '/dashboard/lists'
     | '/dashboard/presents'
+    | '/list/$listId/public'
     | '/dashboard/lists/$listId/edit'
     | '/dashboard/presents/$presentId/edit'
     | '/dashboard/lists/$listId'
@@ -419,6 +438,7 @@ export interface FileRouteTypes {
     | '/dashboard/presents/create'
     | '/dashboard/lists/'
     | '/dashboard/presents/'
+    | '/(public)/list/$listId/public'
     | '/dashboard/lists/$listId/edit'
     | '/dashboard/presents/$presentId/edit'
     | '/dashboard/lists/$listId/'
@@ -429,12 +449,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  publicListListIdPublicRoute: typeof publicListListIdPublicRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  publicListListIdPublicRoute: publicListListIdPublicRoute,
 }
 
 export const routeTree = rootRoute
@@ -449,7 +471,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/auth",
-        "/dashboard"
+        "/dashboard",
+        "/(public)/list/$listId/public"
       ]
     },
     "/": {
@@ -521,6 +544,9 @@ export const routeTree = rootRoute
     "/dashboard/presents/": {
       "filePath": "dashboard/presents/index.tsx",
       "parent": "/dashboard/presents"
+    },
+    "/(public)/list/$listId/public": {
+      "filePath": "(public)/list/$listId.public.tsx"
     },
     "/dashboard/lists/$listId/edit": {
       "filePath": "dashboard/lists/$listId/edit.tsx",

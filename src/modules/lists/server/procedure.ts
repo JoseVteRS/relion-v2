@@ -1,5 +1,11 @@
 import { prisma } from "@/lib/db";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { PresentStatus } from "@/modules/presents/schemas";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/trpc/init";
+import { ItemStatus, ItemVisibility } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { listCreateSchema } from "../schemas";
@@ -7,6 +13,9 @@ import { listCreateSchema } from "../schemas";
 const listEditSchema = listCreateSchema.partial().extend({ id: z.string() });
 
 export const listRouter = createTRPCRouter({
+  /**
+   * Create a new list
+   */
   create: protectedProcedure
     .input(listCreateSchema)
     .mutation(async ({ ctx, input }) => {
@@ -42,6 +51,9 @@ export const listRouter = createTRPCRouter({
         });
       }
     }),
+  /**
+   * Get all lists
+   */
   get: protectedProcedure.query(async ({ ctx }) => {
     try {
       const lists = await prisma.list.findMany({
@@ -50,14 +62,14 @@ export const listRouter = createTRPCRouter({
         },
         orderBy: { eventDate: "asc" },
       });
-      
+
       if (!lists) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "[listRouter.get] No se encontraron listas",
         });
       }
-    
+
       return lists;
     } catch (error) {
       throw new TRPCError({
@@ -66,6 +78,9 @@ export const listRouter = createTRPCRouter({
       });
     }
   }),
+  /**
+   * Get a list by id
+   */
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -82,6 +97,10 @@ export const listRouter = createTRPCRouter({
 
       return list;
     }),
+
+  /**
+   * Edit a list
+   */
   edit: protectedProcedure
     .input(listEditSchema)
     .mutation(async ({ ctx, input }) => {
@@ -118,6 +137,10 @@ export const listRouter = createTRPCRouter({
         });
       }
     }),
+
+  /**
+   * Delete a list
+   */
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -132,6 +155,10 @@ export const listRouter = createTRPCRouter({
         });
       }
     }),
+
+  /**
+   * Get a list by id with presents
+   */
   getListByIdWithPresents: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -156,4 +183,56 @@ export const listRouter = createTRPCRouter({
 
       return list;
     }),
+
+  /**
+   * Get a list by id with presents
+   */
+  getListWithPresentPublic: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const list = await prisma.list.findUnique({
+        where: {
+          id: input.id,
+          status: ItemStatus.PUBLISHED,
+          visibility: ItemVisibility.PUBLIC,
+          NOT: {
+            ownerId: ctx.session?.user.id,
+          },
+        },
+        include: {
+          presents: {
+            where: {
+              status: ItemStatus.PUBLISHED,
+              visibility: ItemVisibility.PUBLIC,
+            },
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              externalLink: true,
+              pickedStatus: true,
+              pickedAt: true,
+              pickedBy: {
+                select: {
+                  name: true,
+                },
+              },
+              listId: true,
+            },
+          },
+          owner: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+      const isOwner = list?.ownerId === ctx.session?.user.id;
+
+      if (isOwner) {
+        return [];
+      }
+
+      return list;
+    })
 });
