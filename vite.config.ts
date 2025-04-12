@@ -1,6 +1,15 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      external: [
+        /^\.prisma/, // Excluye cualquier importación que comience con .prisma
+        "prisma",
+        "@prisma/client",
+      ],
+    },
+  },
   plugins: [tailwindcss()],
   publicDir: "./src/public",
   envDir:
