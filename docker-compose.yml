@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  # Servicio de aplicación
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # No es necesario definir DATABASE_URL aquí ya que se copia de .env.production en el Dockerfile
+    restart: unless-stopped
+    # No definimos dependencia a base de datos porque se usa Neon DB (servicio externo)
+    
+  # Opcionalmente, servicio para migraciones de Prisma
+  prisma-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: npx prisma migrate deploy
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - app 

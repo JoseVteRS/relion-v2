@@ -31,7 +31,7 @@ function RootComponent() {
     <RootDocument>
       <div id="root">
         <div
-          className="w-screen overflow-x-hidden scroll-smooth antialiased"
+          className="scroll-smooth antialiased"
           id="content"
         >
           <Outlet />
