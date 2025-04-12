@@ -1,31 +1,26 @@
 import { useSession } from "@/lib/auth-client";
+import { IListWithPresentPublic } from "@/modules/lists/interfaces";
 import { useTRPC } from "@/trpc/react";
+import { Present } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Session } from "better-auth";
+import { Atom } from "better-auth/client";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const MAX_PICK_QUOTA_FREE_USER = 5;
 
-export const usePresent = (present?: {
-  id: string;
-  name: string;
-  description?: string | null;
-  externalLink?: string | null;
-  pickedStatus: "UNPICKED" | "PICKED" | "BOUGHT";
-  pickedByUserId?: string | null;
-  listId?: string | null;
-}) => {
-  const session = useSession;
+export const usePresent = (
+  present: IListWithPresentPublic["presents"][0]
+) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  console.log({ present });
+  const session = useSession();
 
   const listQueryKey = trpc.list.getListWithPresentPublic.queryKey({
     id: present?.listId ?? "",
   });
-
-  
 
   const pickMutation = useMutation(
     trpc.present.pick.mutationOptions({
@@ -69,7 +64,7 @@ export const usePresent = (present?: {
   const handlePick = async () => {
     if (!present) return;
 
-    if (!session.get()?.data?.user) {
+    if (!session) {
       // TODO: Mostrar modal para iniciar sesión o redireccionar a la página de inicio de sesión
       toast.error("Debes iniciar sesión para elegir un regalo");
       return;
@@ -82,7 +77,7 @@ export const usePresent = (present?: {
   const handleUnpick = async () => {
     if (!present) return;
 
-    if (!session.get()?.data?.user) {
+    if (!session) {
       toast.error("Debes iniciar sesión para desmarcar un regalo");
       return;
     }
@@ -94,7 +89,7 @@ export const usePresent = (present?: {
   const handleMarkAsBought = async () => {
     if (!present) return;
 
-    if (!session.get()?.data?.user) {
+    if (!session) {
       toast.error("Debes iniciar sesión para marcar un regalo como comprado");
       return;
     }
@@ -102,12 +97,8 @@ export const usePresent = (present?: {
     await markAsBoughtMutation.mutateAsync({ presentId: present.id });
   };
 
-  const isPickedByMe = !!(
-    present?.pickedByUserId === session.get()?.data?.user.id
-  );
-  const canUserPickMore = session.get()?.data?.user
-    ? true
-    : MAX_PICK_QUOTA_FREE_USER;
+  const isPickedByMe = present?.pickedBy?.id === session?.data?.user.id;
+  const canUserPickMore = true ? true : MAX_PICK_QUOTA_FREE_USER;
 
   return {
     handlePick,

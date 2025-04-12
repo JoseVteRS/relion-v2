@@ -215,6 +215,7 @@ export const listRouter = createTRPCRouter({
               pickedBy: {
                 select: {
                   name: true,
+                  id: true,
                 },
               },
               listId: true,
@@ -230,7 +231,10 @@ export const listRouter = createTRPCRouter({
       const isOwner = list?.ownerId === ctx.session?.user.id;
 
       if (isOwner) {
-        return [];
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "[listRouter.getListWithPresentPublic] No puedes ver esta lista",
+        });
       }
 
       return list;

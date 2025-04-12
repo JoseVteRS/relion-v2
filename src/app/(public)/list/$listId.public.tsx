@@ -1,31 +1,12 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { usePresent } from "@/modules/presents/hooks/usePresent";
-import { PresentCard } from "@/modules/presents/ui/components/present-card";
+import { IListWithPresentPublic } from "@/modules/lists/interfaces";
+import { PublicPublicItem } from "@/modules/presents/ui/components/present-public-item";
 import { useTRPC } from "@/trpc/react";
-import { PickedStatus } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CheckCircle2, Gift, LinkIcon, UserIcon } from "lucide-react";
-
-interface ListWithPresents {
-  name: string;
-  eventDate: Date | null;
-  owner: {
-    name: string | null;
-  };
-  presents: Array<{
-    id: string;
-    name: string;
-    description: string | null;
-    externalLink: string | null;
-    pickedStatus: PickedStatus;
-    pickedByUserId?: string;
-  }>;
-}
+import { UserIcon } from "lucide-react";
 
 export const Route = createFileRoute("/(public)/list/$listId/public")({
   loader: async ({ context: { trpc, queryClient }, params: { listId } }) => {
@@ -41,11 +22,12 @@ function RouteComponent() {
   const { listId } = Route.useParams();
   const trpc = useTRPC();
 
-  const listQuery = useQuery(
-    trpc.list.getListWithPresentPublic.queryOptions({ id: listId })
-  );
+  const listQueryOptions = trpc.list.getListWithPresentPublic.queryOptions({
+    id: listId,
+  });
+  const listQuery = useQuery(listQueryOptions);
+  const list = listQuery.data;
 
-  const list = listQuery.data as ListWithPresents | undefined;
 
   if (!list) {
     return (
@@ -84,7 +66,10 @@ function RouteComponent() {
             <span>{list.owner.name}</span>
             {list.eventDate && (
               <span className="ml-4">
-                {format(new Date(list.eventDate), "d/M/yyyy", { locale: es })}
+                {format(new Date(list.eventDate), "d 'de' MMMM 'de' yyyy", {
+                  locale: es,
+
+                })}
               </span>
             )}
           </div>
@@ -93,7 +78,7 @@ function RouteComponent() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {list.presents.map((present) => (
-          <PresentCard key={present.id} present={present} />
+          <PublicPublicItem key={present.id} present={present} />
         ))}
       </div>
     </div>

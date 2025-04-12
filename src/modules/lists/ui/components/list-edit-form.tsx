@@ -52,11 +52,13 @@ const statusOptions = [
 const buttonTextContext = {
   [ItemStatus.DRAFT]: "Guardar como borrador",
   [ItemStatus.PUBLISHED]: "Actualizar lista",
+  [ItemStatus.ARCHIVED]: "Archivar lista",
 };
 
 const buttonTextPendingContext = {
   [ItemStatus.DRAFT]: "Guardando...",
   [ItemStatus.PUBLISHED]: "Publicando...",
+  [ItemStatus.ARCHIVED]: "Archivando...",
 };
 
 type FormValues = z.infer<typeof formSchema>;
