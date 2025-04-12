@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db";
+import prisma from "@/lib/db";
 import { PresentStatus } from "@/modules/presents/schemas";
 import {
   createTRPCRouter,
@@ -233,10 +233,11 @@ export const listRouter = createTRPCRouter({
       if (isOwner) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "[listRouter.getListWithPresentPublic] No puedes ver esta lista",
+          message:
+            "[listRouter.getListWithPresentPublic] No puedes ver esta lista",
         });
       }
 
       return list;
-    })
+    }),
 });

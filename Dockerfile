@@ -10,7 +10,7 @@ COPY tsconfig.json ./
 COPY prisma ./prisma/
 
 # Instalar dependencias y generar cliente Prisma
-RUN bun install && bunx prisma generate
+RUN bun install
 
 # Copiar el resto del código fuente
 COPY . .

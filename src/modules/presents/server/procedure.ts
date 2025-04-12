@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db";
+import prisma from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { PickedStatus, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -6,7 +6,9 @@ import { z } from "zod";
 import { PresentStatus } from "../schemas";
 import { presentCreateSchema } from "../schemas/present-create-schema";
 
-const presentEditSchema = presentCreateSchema.partial().extend({ id: z.string() });
+const presentEditSchema = presentCreateSchema
+  .partial()
+  .extend({ id: z.string() });
 
 export const presentRouter = createTRPCRouter({
   create: protectedProcedure
@@ -57,7 +59,6 @@ export const presentRouter = createTRPCRouter({
         orderBy: {
           createdAt: "desc",
         },
-        
       });
 
       if (!presents) {
@@ -141,7 +142,7 @@ export const presentRouter = createTRPCRouter({
     .input(z.object({ presentId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { presentId } = input;
-      
+
       const present = await prisma.present.findUnique({
         where: { id: presentId },
       });
@@ -170,7 +171,7 @@ export const presentRouter = createTRPCRouter({
           pickedByUserId: ctx.session.user.id,
         },
       });
-      
+
       return updatedPresent;
     }),
 
@@ -181,7 +182,7 @@ export const presentRouter = createTRPCRouter({
     .input(z.object({ presentId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { presentId } = input;
-      
+
       const present = await prisma.present.findUnique({
         where: { id: presentId },
       });
@@ -220,7 +221,7 @@ export const presentRouter = createTRPCRouter({
     .input(z.object({ presentId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { presentId } = input;
-      
+
       const present = await prisma.present.findUnique({
         where: { id: presentId },
       });
@@ -236,7 +237,8 @@ export const presentRouter = createTRPCRouter({
       if (present.pickedStatus !== PickedStatus.PICKED) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "El regalo debe estar marcado como elegido antes de marcarlo como comprado",
+          message:
+            "El regalo debe estar marcado como elegido antes de marcarlo como comprado",
         });
       }
 
@@ -256,5 +258,5 @@ export const presentRouter = createTRPCRouter({
       });
 
       return updatedPresent;
-    })
+    }),
 });
