@@ -13,8 +13,8 @@ COPY package.json bun.lockb ./
 COPY tsconfig.json ./
 COPY prisma ./prisma/
 
-# Instalar dependencias
-RUN npm install
+# Instalar dependencias con --legacy-peer-deps para resolver conflictos
+RUN npm install --legacy-peer-deps
 
 # Generar cliente Prisma
 RUN npx prisma generate
@@ -34,7 +34,7 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
 # Configurar variables de entorno para producción
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Copiar archivos de la etapa de construcción
 COPY --from=builder /app/package.json ./
