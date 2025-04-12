@@ -5,4 +5,10 @@ export default defineConfig({
   publicDir: "./src/public",
   envDir:
     process.env.NODE_ENV === "production" ? "./env.production" : "./env.local",
+  resolve: {
+    alias: {
+      ".prisma/client/index-browser":
+        "./node_modules/.prisma/client/index-browser.js",
+    },
+  },
 });
