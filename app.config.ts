@@ -7,7 +7,7 @@ export default defineConfig({
     routesDirectory: "src/app",
   },
   server: {
-    preset: "vercel",
+    preset: "bun",
   },
   vite: {
     plugins: [

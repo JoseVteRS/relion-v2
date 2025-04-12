@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  # Servicio de aplicación
+  # Servicio principal de la aplicación
   app:
     build:
       context: .
@@ -13,14 +13,3 @@ services:
     env_file:
       - .env.production
     restart: unless-stopped
-    # No definimos dependencia a base de datos porque se usa Neon DB (servicio externo)
-    
-  # Servicio para migraciones de Prisma
-  prisma-migrate:
-    build:
-      context: .
-      dockerfile: prisma-migrate.Dockerfile
-    env_file:
-      - .env.production
-    depends_on:
-      - app 
